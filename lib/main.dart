@@ -7,6 +7,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:weather_app/weather_models.dart';
 import 'package:devicelocale/devicelocale.dart';
 import 'package:weather_app/weather_controller.dart';
+import 'package:flutter/services.dart';
 import 'dart:io';
 
 class Routes {
@@ -16,17 +17,21 @@ class Routes {
 
 final routesMap = <String, WidgetBuilder>{
   Routes.splash : (_) => SplashScreen(Routes.home),
-  Routes.home :   (_) => HomeScreen(),
+  Routes.home :   (_) => const HomeScreen(),
 };
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+  ]);
+
   String ?localeStr = await Devicelocale.currentLocale;
   if (localeStr == null) {
-    Localization.setLocale(Locale('ru'));
+    Localization.setLocale(const Locale('ru'));
   } else {
-    Localization.setLocale((localeStr == 'ru_RU') ? Locale('ru') : Locale('en'));
+    Localization.setLocale((localeStr == 'ru_RU') ? const Locale('ru') : const Locale('en'));
   }
 
   Directory dir = await getApplicationDocumentsDirectory();
@@ -37,7 +42,7 @@ void main() async {
     ..registerAdapter(WeatherDayAdapter())
     ..registerAdapter(WeatherConditionAdapter())
     ..registerAdapter(WeatherCurrentAdapter());
-  var box = await Hive.openBox('weather');
+  // var box = await Hive.openBox('weather');
 
   // await box.put('test', hour);
   // final g = box.get('test');
